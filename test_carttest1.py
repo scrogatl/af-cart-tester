@@ -24,7 +24,7 @@ class TestCarttest1():
     self.driver = webdriver.Firefox(options=options)
 
   def do_quit_routine(self):
-    loggin.info("do_quit")
+    logging.info("do_quit")
     self.teardown_method()
     quit()
 
@@ -50,18 +50,20 @@ class TestCarttest1():
     self.driver.find_element(By.ID, "password").send_keys("admin")
     self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
     logging.info("Successful login")
-    time.sleep(3)
+    
     try:
-        element = WebDriverWait(self.driver, 5).until(
+        element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".owl-item:nth-child(2) .img-fluid"))
         )
+        element.click()
+        # self.driver.find_element(By.CSS_SELECTOR, ".owl-item:nth-child(2) .img-fluid").click()
+        logging.info("Added water bottle")
     except TimeoutException:
         logging.warning("Unable to find water bottle. Timed out.")
         return
-    self.driver.find_element(By.CSS_SELECTOR, ".owl-item:nth-child(2) .img-fluid").click()
-    time.sleep(2)
+    
     try:
-        element = WebDriverWait(self.driver, 5).until(
+        element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "addToCart"))
         )
     except TimeoutException:
@@ -69,19 +71,33 @@ class TestCarttest1():
         return
     self.driver.find_element(By.ID, "addToCart").click()
     logging.info("added to cart")
-    time.sleep(2)
-    self.driver.find_element(By.CSS_SELECTOR, ".d-none > .btn-outline-primary").click()
-    time.sleep(2)
-    self.driver.find_element(By.CSS_SELECTOR, ".fa-trash-o").click()
+    
+    try:
+        element = WebDriverWait(self.driver, 20).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".d-none > .btn-outline-primary"))
+        )
+        self.driver.find_element(By.CSS_SELECTOR, ".d-none > .btn-outline-primary").click()
+    except TimeoutException:
+        logging.warning("Unable to addToCart. Timed out.")
+        return
+    
+    try:
+        element = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".fa-trash-o"))
+        )
+        self.driver.find_element(By.CSS_SELECTOR, ".fa-trash-o").click()
+    except TimeoutException:
+        logging.warning("Unable to addToCart. Timed out.")
+        return
     time.sleep(2)
     self.driver.find_element(By.CSS_SELECTOR, ".d-none > .btn-outline-primary").click() 
     logging.info("finished")
 
 
 if __name__ == "__main__":
+  while(True):
     cartTest = TestCarttest1() 
-    while(True):
-      cartTest.setup_method()
-      cartTest.test_carttest1()
-      cartTest.teardown_method()
-      time.sleep(2)
+    cartTest.setup_method()
+    cartTest.test_carttest1()
+    cartTest.teardown_method()
+    time.sleep(2)
