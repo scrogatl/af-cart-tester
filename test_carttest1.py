@@ -51,13 +51,13 @@ class TestCarttest1():
     self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
     logging.info("Successful login")
     
+    time.sleep(2)
     try:
         element = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".owl-item:nth-child(2) .img-fluid"))
+            EC.element_to_be_clickable((By.CSS_SELECTOR, ".owl-item:nth-child(2) .img-fluid"))
         )
-        element.click()
-        # self.driver.find_element(By.CSS_SELECTOR, ".owl-item:nth-child(2) .img-fluid").click()
-        logging.info("Added water bottle")
+        self.driver.find_element(By.CSS_SELECTOR, ".owl-item:nth-child(2) .img-fluid").click()
+        logging.info("Clicked water bottle")
     except TimeoutException:
         logging.warning("Unable to find water bottle. Timed out.")
         return
@@ -66,11 +66,11 @@ class TestCarttest1():
         element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "addToCart"))
         )
+        self.driver.find_element(By.ID, "addToCart").click()
+        logging.info("added to cart")
     except TimeoutException:
         logging.warning("Unable to addToCart. Timed out.")
         return
-    self.driver.find_element(By.ID, "addToCart").click()
-    logging.info("added to cart")
     
     try:
         element = WebDriverWait(self.driver, 20).until(
@@ -81,14 +81,18 @@ class TestCarttest1():
         logging.warning("Unable to addToCart. Timed out.")
         return
     
+    time.sleep(3)
     try:
         element = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".fa-trash-o"))
+            EC.element_to_be_clickable((By.CSS_SELECTOR, ".fa-trash-o"))
         )
         self.driver.find_element(By.CSS_SELECTOR, ".fa-trash-o").click()
+        logging.info("Trashed cart")
+        time.sleep(5)
     except TimeoutException:
-        logging.warning("Unable to addToCart. Timed out.")
+        logging.warning("Unable to trash cart. Timed out.")
         return
+    
     time.sleep(2)
     self.driver.find_element(By.CSS_SELECTOR, ".d-none > .btn-outline-primary").click() 
     logging.info("finished")
